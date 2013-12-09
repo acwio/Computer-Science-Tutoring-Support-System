@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MTSU: Computer Science Tutoring Support System</title>
+  <meta name="author" content="Alex C. Williams">
+  <meta name="description" content="An interactive and collaborative web application for tutoring computer science students in Computer Science courses.">
+  <meta name ="keywords" content="tutor,computer, science,draw, video, audio, webrtc">
+  <link href="css/bootstrap.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/jquery-1.10.2.min.js"></script>
+  <script src="js/peer.js"></script>
+    <script>
+    // Compatibility shim
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    // PeerJS object
+    var peer = new Peer({ key: 'lwjd5qra8257b9', debug: 3, config: {'iceServers': [
+      { url: 'stun:stun.l.google.com:19302' } // Pass in optional STUN and TURN server for maximum network compatibility
+    ]}});
+
+    peer.on('open', function(){
+      $('#my-id').text(peer.id);
+    });
+
+    // Receiving a call
+    peer.on('call', function(call){
+      // Answer the call automatically (instead of prompting user) for demo purposes
+      call.answer(window.localStream);
+      step3(call);
+    });
+    peer.on('error', function(err){
+      alert(err.message);
+      // Return to step 2 if error occurs
+      step2();
+    });
+
+    // Click handlers setup
+    $(function(){
+      $('#make-call').click(function(){
+        // Initiate a call!
+        var call = peer.call($('#callto-id').val(), window.localStream);
+
+        step3(call);
+      });
+
+      $('#end-call').click(function(){
+        window.existingCall.close();
+        step2();
+      });
+
+      // Retry if getUserMedia fails
+      $('#step1-retry').click(function(){
+        $('#step1-error').hide();
+        step1();
+      });
+
+      // Get things started
+      step1();
+    });
+
+    function step1 () {
+      // Get audio/video stream
+      navigator.getUserMedia({audio: true, video: true}, function(stream){
+        // Set your video displays
+        $('#callermedia').prop('src', URL.createObjectURL(stream));
+
+        window.localStream = stream;
+        step2();
+      }, function(){ $('#step1-error').show(); });
+    }
+
+    function step2 () {
+      $('#step1, #step3').hide();
+      $('#step2').show();
+    }
+
+    function step3 (call) {
+      // Hang up on an existing call if present
+      if (window.existingCall) {
+        window.existingCall.close();
+      }
+
+      // Wait for stream on the call, then set peer video display
+      call.on('stream', function(stream){
+        $('#receivermedia').prop('src', URL.createObjectURL(stream));
+      });
+
+      // UI stuff
+      window.existingCall = call;
+      $('#their-id').text(call.peer);
+      call.on('close', step2);
+      $('#step1, #step2').hide();
+      $('#step3').show();
+    }
+
+  </script>
+  <script src="js/bootstrap.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/dragdrop.js"></script>
+  <script src="js/filesaver.js"></script>
+
+  <script>
+		var TogetherJSConfig_dontShowClicks = true;
+		var TogetherJSConfig_autoStart = true;
+		var TogetherJSConfig_suppressJoinConfirmation = true;
+		var TogetherJSConfig_inviteFromRoom = true;
+		var TogetherJSConfig_disableWebRTC = true;
+  </script>
+  <script src="https://togetherjs.com/togetherjs-min.js"></script>
+</head>
+
+<body>
+    <div class="navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header pull-left">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+		<a class="navbar-brand" href="https://cs.mtsu.edu/~acw4a/awt/proj3/">Tutoring Support System</a>
+		<input type="image" id="videobutton" src="images/webcam.png" value="video_button">
+		<input type="image" id="editorbutton" src="images/editor.png" value="editor_button">
+		<input type="image" id="savebutton" src="images/save.png" value="save_button">
+		<input type="image" id="erasebutton" src="images/erase.png" value="erase_button">
+		<input type="image" id="drawbutton" src="images/draw.png" value="draw_button">
+		<input type="image" id="paintbutton" src="images/paint.png" value="paint_button">
+
+	<!-- The Following Steps (1-3) were copied from the Peer.js website -->
+		<!-- Get local audio/video stream -->
+        <div id="step1">
+          <p>Please click `allow` on the top of the screen so we can access your webcam and microphone for calls.</p>
+          <div id="step1-error">
+
+            <p>Failed to access the webcam and microphone. Make sure to run this demo on an http server and click allow when asked for permission by the browser.</p>
+            <a href="#" class="pure-button pure-button-error" id="step1-retry">Try again</a>
+          </div>
+        </div>
+
+        <!-- Make calls to others -->
+        <div id="step2">
+          Your id: <span id="my-id">...</span>
+		<a href="#" class="pure-button pure-button-success" id="make-call"><img src="images/phone.png" id="callbutton"></a>
+		<input type="text" placeholder="Call user id..." id="callto-id">
+        </div>
+
+        <!-- Call in progress -->
+        <div id="step3">
+		Currently in call with <span id="their-id">...</span>
+		<a href="#" class="pure-button pure-button-error" id="end-call"><img src="images/phone.png" id="callbutton"></a>
+        </div>
+        </div>
+      </div>
+    </div>
+<div id="wrapper">
+	<canvas id="myCanvas"></canvas>
+	<div id="communication">
+  		<section id="caller">
+			<video id="callermedia" height=100% width=100% muted="true" autoplay></video>
+  		</section>
+  		<section id="receiver">
+    			<video id="receivermedia" height=100% width=100% autoplay></video>
+  		</section>
+	</div>
+	<div id= "wrapper2">
+		<div id="editor">int increment(int x) 
+{
+	x = x + 1;
+	return x;
+}
+
+int main()
+{
+	/* call function */
+	int y = increment(1);
+	
+	/* print the value of y */
+	printf("The value of y is %d", y);
+	
+	/* return */
+	return 0;
+}
+	</div>
+	</div>
+</div>
+
+
+
+<script src="https://cs.mtsu.edu/~acw4a/awt/proj3/ace-builds/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script>
+	var editor = ace.edit("editor");
+	editor.setTheme("ace/theme/clouds");
+	editor.getSession().setMode("ace/mode/c_cpp");
+	editor.getSession().setUseWrapMode(true);
+	editor.setShowPrintMargin(false);
+</script>
+
+</body>
+</html>

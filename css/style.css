@@ -1,0 +1,84 @@
+    body{
+      font-family: Helvetica, Arial, sans-serif;
+      color: #545454;
+      background: #403E3E;
+    }
+
+    #wrapper2 {
+	position: relative;
+	z-index: 2;
+	cursor: move;
+	visibility: visible;
+	float: left;
+	width: 35%;
+	height: 45%;
+	margin: 1.5em;
+	background: #0088CC;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	border-radius: 3px;
+	resize: both;
+	overflow: auto;
+     }
+
+    #editor {
+        position: relative;
+        float: left;
+	padding: 5px;
+	margin: 5px;
+	height: 97%;
+	width: 98%;
+	background-color: #fff;
+	resize: none;
+	}
+
+    #caller, #receiver{
+    position: relative;
+      margin: 5px;
+      padding: 5px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2); 
+      border-radius: 3px;
+      background: #FFF;
+	  overflow: hidden;
+	  width: 97%;
+	  height: 48%;
+    }
+    
+    #callbutton, #videobutton, #savebutton, #erasebutton, #drawbutton, #editorbutton, #paintbutton{
+	  float: left;
+	  padding: 10px;
+	  margin-left: 10px;
+	  margin-right: 10px;
+	  width: 5%;
+	  height: auto;
+	}
+    
+   #communication{
+	position: relative;
+	cursor: move;
+	float: left;
+	visibility: visible;
+	width: 15%;
+	height: 51%;
+	margin: 1.5em;
+	background: #0088CC;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	border-radius: 3px;
+	z-index: 4;
+	resize: both;
+	overflow: auto;
+	}
+	
+    #wrapper{
+	  padding-top: 60px;
+	  position: relative;
+	  width: 100%;
+	  height: 955px;
+	  margin: 0 auto;
+	  overflow: hidden;
+	}
+	
+    #myCanvas{
+	  position: absolute;
+	  cursor: crosshair;
+	  z-index: 1;
+	}
