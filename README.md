@@ -1,7 +1,9 @@
 CS Tutoring Support System 
 ========================================
-Author:         Alex C. Williams <br />
-Organization:   Middle Tennessee State University
+<table>
+<tr><td><strong>Author:</strong></td><td>Alex C. Williams</td></tr> <br />
+<tr><td><strong>Organization:</strong></td><td>Middle Tennessee State University</td></tr>
+</table>
 
 About
 ----------------------------------------
