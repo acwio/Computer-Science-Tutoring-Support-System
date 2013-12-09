@@ -1,6 +1,6 @@
-Computer-Science-Tutoring-Support-System
+CS Tutoring Support System 
 ========================================
-Author:         Alex C. Williams
+Author:         Alex C. Williams <br />
 Organization:   Middle Tennessee State University
 
 About
